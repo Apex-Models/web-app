@@ -14,7 +14,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   const checkAuth = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    const response = await fetch('http://localhost:4003/api/auth/me', {
       credentials: 'include'
     });
     const data = await response.json();
@@ -45,6 +45,24 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     //     setCart(null);
     // }
   };
+
+  const addToCart = (data: CartItem) => {
+    const updatedCart = [...cart, data];
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
+    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    //   credentials: 'include'
+    // });
+  }
+
+  const removeFromCart = (id: string) => {
+    const updatedCart = cart.filter(item => item.id !== id);
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  }
       
   const login = (data: User) => {
     console.log('login', data);
@@ -54,7 +72,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4003'}/api/auth/logout`, {
         credentials: 'include'
       });
       setUser(null);
@@ -63,12 +81,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
       console.error('Erreur lors de la déconnexion:', error);
     }
   };
-
-  const addToCart = (data: CartItem) => {
-    const updatedCart = [...cart, data];
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  }
 
   useEffect(() => {
     checkAuth();

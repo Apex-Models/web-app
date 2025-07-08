@@ -1,0 +1,22 @@
+.providerButton {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    .providerIcon {
+        width: 20px;
+        height: 20px;
+        margin: 0 20px;
+    }
+
+    &.black {
+        background-color: black;
+        color: white;
+        bprder: none;
+    }
+}

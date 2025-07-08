@@ -6,7 +6,7 @@ import { ApiResponse, FetchParams } from "../types/fetch";
 const useFetch = ({ url, method, body, token }: FetchParams) => {  
   const [data, setData] = useState<ApiResponse>();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true)
@@ -32,7 +32,7 @@ const useFetch = ({ url, method, body, token }: FetchParams) => {
       setData(dataJson);
     }
     catch(error) {
-      setError(error)
+      setError(error instanceof Error ? error.message : String(error))
     }
     finally {
         setTimeout(() => {

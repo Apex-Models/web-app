@@ -1,9 +1,12 @@
 "use client";
 import UserContext from '@/components/context/userContext';
-import useFetch from '@/components/hooks/useFetch';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { use, useContext, useEffect, useState } from 'react';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
+import ProviderButton from '@/components/UI/ProviderButton';
+import styles from './index.module.scss';
 
 export default function Register () {
     const router = useRouter();
@@ -11,16 +14,50 @@ export default function Register () {
 
     const [userError, setUserError] = useState("");
     const [userForm, setUserForm] = useState ({
-        email: '',
-        password: '',
         firstName: '',
-        lastName: ''
+        lastName: '',
+        email: '',
+        password: ''
     });
     
-    const { fetchData, data, error, loading } = useFetch({ url: 'auth/register', method: 'POST', body: userForm });
+    // États pour remplacer useFetch
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserForm({ ...userForm, [e.target.name]: e.target.value});
+    };
+    
+    // Fonction fetch pour remplacer useFetch
+    const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+        
+        try {
+            const response = await fetch(`http://localhost:4003/api/auth/register`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userForm)
+            });
+            
+            const dataJson = await response.json();
+            
+            if(dataJson.code && dataJson.code !== 200) {
+                setError(dataJson.message);
+            }
+            
+            setData(dataJson);
+        } catch(err) {
+            setError(err instanceof Error ? err.message : String(err));
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 1000);
+        }
     };
     
     const handleSubmit = (event: React.FormEvent) => {
@@ -48,56 +85,62 @@ export default function Register () {
     }, [data]);
 
     return (
-        <div>
+        <div className={styles.wrapper}>
             <h1>Register</h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={userForm.email}
-                        onChange={(e) => handleChange(e)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="firstName">firstName:</label>
-                    <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        value={userForm.firstName}
-                        onChange={(e) => handleChange(e)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">lastName:</label>
-                    <input
-                        type="text"
-                        id="lastName"
-                        name='lastName'
-                        value={userForm.lastName}
-                        onChange={(e) => handleChange(e)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={userForm.password}
-                        onChange={(e) => handleChange(e)}
-                        required
-                    />
-                </div>
-                <button type="submit">Register</button>
+                <Input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    label='firstName:'
+                    placeholder="firstName"
+                    value={userForm.firstName}
+                    onChange={(e) => handleChange(e)}
+                    isRequired
+                />
+                <Input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    label='lastName'
+                    placeholder="lastName"
+                    value={userForm.lastName}
+                    onChange={(e) => handleChange(e)}
+                    isRequired
+                />
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    label='Email:'
+                    placeholder="Enter your email"
+                    value={userForm.email}
+                    onChange={(e) => handleChange(e)}
+                    isRequired
+                />
+                <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    label='Password:'
+                    placeholder="password"
+                    value={userForm.password}
+                    onChange={(e) => handleChange(e)}
+                    isRequired
+                />
+                <Button type="submit" title="Register" />
+                <ProviderButton
+                    title="Continue with Google"
+                    icon="/images/google-icon.svg"
+                    href="/api/auth/google"
+                />
+                <ProviderButton
+                    title="Continue with Apple"
+                    icon="/images/apple-icon.svg"
+                    href="/api/auth/apple"
+                    style='black'
+                />
             </form>
-            <a href='http://localhost:3030/api/auth/google'>Register with Google</a>
             <p>Not already member ?</p>
             <Link href="/login">login</Link>
             {userError && <p>{userError}</p>}

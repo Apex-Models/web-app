@@ -10,6 +10,9 @@ export type CartItem = {
     name: string;
     quantity: number;
     price: number;
+    imageUrl?: string[];
+    selectedColor?: string;
+    selectedOptions?: { [key: string]: string };
 };
 
 export interface UserContextType {
