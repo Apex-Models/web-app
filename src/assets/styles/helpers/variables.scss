@@ -8,14 +8,17 @@
     --font-size-s: 0.75rem;
     --font-size-xs: 0.625rem;
 
-    --primary-font-color: #242424;
-    --secondary-font-color: #ffffff;
+    --primary-font-color: #000000;
+    --secondary-font-color: rgb(79, 79, 79);
+    --third-font-color: #ffffff;
+    --fourth-font-color: #a0a0a0;
 
     --main-color: #e5e5e5;
-    --secondary-color: #d22626;
+    --secondary-color: #000000;
     --third-color: #ffffff;
 
-    --border-radius: 2px;
+    --border-radius: 3px;
+    --gap: 15px;
 
     --header-color: #ffffff;
     --header-height: 60px;

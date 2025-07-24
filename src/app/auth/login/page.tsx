@@ -2,40 +2,37 @@
 import UserContext from '@/components/context/userContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { use, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import ProviderButton from '@/components/UI/ProviderButton';
-import styles from './index.module.scss';
+import styles from '../index.module.scss';
 
-export default function Register () {
+export default function Login () {
     const router = useRouter();
     const { login } = useContext(UserContext);
 
-    const [userError, setUserError] = useState("");
     const [userForm, setUserForm] = useState ({
-        firstName: '',
-        lastName: '',
         email: '',
-        password: ''
+        password: '',
     });
     
     // États pour remplacer useFetch
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserForm({ ...userForm, [e.target.name]: e.target.value});
     };
-    
+
     // Fonction fetch pour remplacer useFetch
     const fetchData = async () => {
         setLoading(true);
         setError(null);
         
         try {
-            const response = await fetch(`http://localhost:4003/api/auth/register`, {
+            const response = await fetch(`http://localhost:4003/api/auth/login`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -59,61 +56,29 @@ export default function Register () {
             }, 1000);
         }
     };
-    
+
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        if(userForm.email === '' || userForm.password === '') {
-            setUserError('Please fill in all fields');
-            return;
-        } else if(userForm.password.length < 6) {
-            setUserError('Password must be at least 6 characters long');
-            return;
-        } else if(!userForm.email.includes('@')) {
-            setUserError('Please enter a valid email address');
-            return;
-        }
         fetchData();
     };
-    
-    useEffect(() => {
+
+    useEffect(()=> {
         if (data?.success && data?.data) {
             login(data.data);
             router.push('/');
-        } else if (data?.message) {
-            setUserError(data.message || 'Registration failed. Please check your credentials.');
         }
     }, [data]);
 
     return (
-        <div className={styles.wrapper}>
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit}>
-                <Input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    label='firstName:'
-                    placeholder="firstName"
-                    value={userForm.firstName}
-                    onChange={(e) => handleChange(e)}
-                    isRequired
-                />
-                <Input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    label='lastName'
-                    placeholder="lastName"
-                    value={userForm.lastName}
-                    onChange={(e) => handleChange(e)}
-                    isRequired
-                />
+        <div className={styles.container}>
+            <h1 className={styles.title}>Login</h1>
+            <form onSubmit={handleSubmit} className={styles.wrapper}>
+                { error && <p>{error}</p> }
                 <Input
                     id="email"
                     name="email"
                     type="email"
-                    label='Email:'
-                    placeholder="Enter your email"
+                    placeholder="email"
                     value={userForm.email}
                     onChange={(e) => handleChange(e)}
                     isRequired
@@ -122,28 +87,32 @@ export default function Register () {
                     id="password"
                     name="password"
                     type="password"
-                    label='Password:'
                     placeholder="password"
                     value={userForm.password}
                     onChange={(e) => handleChange(e)}
                     isRequired
                 />
-                <Button type="submit" title="Register" />
+                <Button type="submit" title="Login" />
+                <div className={styles.separator}>
+                    <div className={styles.line}/>
+                    <span className={styles.text}>or</span>
+                    <div className={styles.line}/>
+                </div>
                 <ProviderButton
                     title="Continue with Google"
-                    icon="/images/google-icon.svg"
+                    provider="google"
                     href="/api/auth/google"
                 />
                 <ProviderButton
                     title="Continue with Apple"
-                    icon="/images/apple-icon.svg"
+                    provider="apple"
                     href="/api/auth/apple"
-                    style='black'
                 />
+
+                <p className={styles.text}>Already an account ? <Link href="/auth/register" className={styles.link}>sign-in</Link></p>
             </form>
-            <p>Not already member ?</p>
-            <Link href="/login">login</Link>
-            {userError && <p>{userError}</p>}
+            {loading && <p>Loading...</p>}
+            <div className={styles.terms}>This site is protected by reCAPTCHA and the <a href="/privacy" className={styles.link}>Google Privacy Policy</a> and <a href="/terms" className={styles.link}>Terms of Service</a> apply.</div>
         </div>
     );
-};
+}

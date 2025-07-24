@@ -25,7 +25,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     } else if (data?.data?.id && data?.data?.email && data?.data?.firstName && data?.data?.lastName) {
       setUser(data.data);
       localStorage.setItem('user', JSON.stringify(data.data));
-      console.log('OK');
     }
   };
 
@@ -65,7 +64,6 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   }
       
   const login = (data: User) => {
-    console.log('login', data);
     setUser(data);
     localStorage.setItem('user', JSON.stringify(data));
   }

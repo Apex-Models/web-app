@@ -10,7 +10,7 @@ const useFetch = ({ url, method, body, token }: FetchParams) => {
 
   const fetchData = async () => {
     setLoading(true)
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}/${url}`);
+    // console.log(`${process.env.NEXT_PUBLIC_API_URL}/${url}`);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
           method: method,

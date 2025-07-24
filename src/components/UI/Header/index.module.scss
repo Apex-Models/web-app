@@ -16,10 +16,17 @@
     &.transparent {
         background-color: transparent;
         color: white;
+        box-shadow: none;
         
         .icon {
             filter: brightness(0) saturate(100%) invert(100%);
         }
+    }
+
+    &.auth {
+        background-color: transparent;
+        box-shadow: none;
+        justify-content: center;
     }
 
     .logo {
