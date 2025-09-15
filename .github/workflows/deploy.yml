@@ -74,6 +74,9 @@ jobs:
             # Installer les dépendances de production
             npm ci --omit=dev
             
+            # Rebuild l'application avec les nouvelles variables d'environnement
+            npm run build
+            
             # Démarrer l'application avec PM2
             pm2 start npm --name "webapp-prod" -- start
             pm2 save
