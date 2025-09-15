@@ -56,13 +56,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     //   credentials: 'include'
     // });
   }
-
-  const removeFromCart = (id: string) => {
-    const updatedCart = cart.filter(item => item.id !== id);
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  }
-      
+        
   const login = (data: User) => {
     setUser(data);
     localStorage.setItem('user', JSON.stringify(data));

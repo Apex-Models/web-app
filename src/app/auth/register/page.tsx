@@ -2,7 +2,7 @@
 import UserContext from '@/components/context/userContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { use, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import ProviderButton from '@/components/UI/ProviderButton';
@@ -22,9 +22,17 @@ export default function Register () {
     });
     
     // États pour remplacer useFetch
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [data, setData] = useState<{
+        code?: number;
+        success?: boolean;
+        data?: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        message?: string;
+    } | null>(null);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserForm({ ...userForm, [e.target.name]: e.target.value});
@@ -32,9 +40,6 @@ export default function Register () {
     
     // Fonction fetch pour remplacer useFetch
     const fetchData = async () => {
-        setLoading(true);
-        setError(null);
-        
         try {
             const response = await fetch(`http://localhost:4003/api/auth/register`, {
                 method: 'POST',
@@ -48,16 +53,12 @@ export default function Register () {
             const dataJson = await response.json();
             
             if(dataJson.code && dataJson.code !== 200) {
-                setError(dataJson.message);
+                setUserError(dataJson.message);
             }
             
             setData(dataJson);
         } catch(err) {
-            setError(err instanceof Error ? err.message : String(err));
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
+            setUserError(err instanceof Error ? err.message : String(err));
         }
     };
     
@@ -83,7 +84,7 @@ export default function Register () {
         } else if (data?.message) {
             setUserError(data.message || 'Registration failed. Please check your credentials.');
         }
-    }, [data]);
+    }, [data, login, router]);
     
     return (
         <div className={styles.container}>

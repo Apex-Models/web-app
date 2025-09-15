@@ -1,13 +1,13 @@
+export interface ApiResponse {
+    code?: number;
+    data?: unknown;
+    message?: string;
+    success?: boolean;
+}
+
 export interface FetchParams {
     url: string;
-    method: string;
-    body?: any;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    body?: unknown;
     token?: string;
-}
-  
-export interface ApiResponse<T = any> {
-    code: number;
-    message?: string;
-    data?: T;
-    success?: boolean;
 }

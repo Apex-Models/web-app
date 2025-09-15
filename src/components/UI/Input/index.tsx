@@ -14,15 +14,29 @@ interface InputProps {
 }
 
 const Index: React.FC<InputProps> = ({ label, name, value, id, placeholder, type, onChange, onFocus, isRequired, autocomplete }) => {
+  // Use id if provided, otherwise use name as fallback
+  const inputId = id || name;
+  
   return (
     <>
         <div className={styles.input_cont}>
             {
             label && (
-                <label htmlFor={name}>{label}</label>
+                <label htmlFor={inputId}>{label}</label>
             )
             }
-            <input className={styles.text_input} type={type} name={name} id={id} value={value} required={isRequired} placeholder={placeholder} onChange={onChange} onFocus={onFocus} autoComplete={autocomplete}/>
+            <input 
+              className={styles.text_input} 
+              type={type} 
+              name={name} 
+              id={inputId} 
+              value={value} 
+              required={isRequired} 
+              placeholder={placeholder} 
+              onChange={onChange} 
+              onFocus={onFocus} 
+              autoComplete={autocomplete}
+            />
         </div>
     </>
   );

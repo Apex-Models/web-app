@@ -47,11 +47,11 @@ export default function ProductsPage() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     useEffect(() => {
         if (data && data.success) {
-            setProducts(data.data);
+            setProducts(data.data as Product[]);
         }
     }, [data]);
 

@@ -18,7 +18,17 @@ export default function Login () {
     });
     
     // États pour remplacer useFetch
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<{
+        code?: number;
+        success?: boolean;
+        data?: {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        message?: string;
+    } | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +77,7 @@ export default function Login () {
             login(data.data);
             router.push('/');
         }
-    }, [data]);
+    }, [data, login, router]);
 
     return (
         <div className={styles.container}>

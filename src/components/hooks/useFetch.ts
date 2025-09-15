@@ -12,19 +12,20 @@ const useFetch = ({ url, method, body, token }: FetchParams) => {
     setLoading(true)
     // console.log(`${process.env.NEXT_PUBLIC_API_URL}/${url}`);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
+      const fetchOptions: RequestInit = {
           method: method,
           credentials: 'include',
           headers: {
               "Content-Type": "application/json",
-              ...token && {
-                "authorization":token
-              }
-          },
-          ...body && {
-              body:JSON.stringify(body)
+              ...(token && { "authorization": token })
           }
-      });
+      };
+
+      if (body) {
+          fetchOptions.body = JSON.stringify(body);
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, fetchOptions);
       const dataJson = await response.json();
       if(dataJson.code && dataJson.code !== 200) {
         setError(dataJson.message);
@@ -35,9 +36,7 @@ const useFetch = ({ url, method, body, token }: FetchParams) => {
       setError(error instanceof Error ? error.message : String(error))
     }
     finally {
-        setTimeout(() => {
-            setLoading(false)
-        }, 1000)
+        setLoading(false)
     }
   }
   return {fetchData, data, error, loading};

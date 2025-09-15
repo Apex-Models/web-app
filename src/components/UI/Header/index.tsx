@@ -49,7 +49,7 @@ const Header = () => {
                         </Link>
                         <Link href="/cart">
                             <img src="/icons/cart.svg" alt="Cart" className={styles.icon}/>
-                            <span className={styles.cartCount}>{cart.length}</span>
+                            <span className={styles.cartCount}>{cart?.length || 0}</span>
                         </Link>
                     </div>
                 )

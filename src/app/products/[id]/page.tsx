@@ -14,7 +14,6 @@ export default function ProductDetail() {
     const [product, setProduct] = useState<Product | null>(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [selectedColor, setSelectedColor] = useState("Blanc Pur");
-    const [quantity, setQuantity] = useState(1);
 
     const { addToCart } = useContext(UserContext);
     
@@ -27,11 +26,11 @@ export default function ProductDetail() {
         if (params.id) {
             fetchData();
         }
-    }, [params.id]);
+    }, [params.id, fetchData]);
 
     useEffect(() => {
         if (data && data.success) {
-            setProduct(data.data);
+            setProduct(data.data as Product);
         }
     }, [data]);
 
@@ -42,13 +41,6 @@ export default function ProductDetail() {
         { name: "Bleu Océan", value: "#1E40AF", selected: selectedColor === "Bleu Océan" },
         { name: "Gris Métallique", value: "#6B7280", selected: selectedColor === "Gris Métallique" },
     ];
-
-    const handleBuyNow = () => {
-        if (product) {
-            // Logique d'achat immédiat
-            console.log(`Achat immédiat: ${product.name}, Couleur: ${selectedColor}, Quantité: ${quantity}`);
-        }
-    };
 
     if (loading) {
         return (
@@ -63,7 +55,7 @@ export default function ProductDetail() {
         return (
             <div className={styles.error}>
                 <h2>Produit introuvable</h2>
-                <p>Le produit que vous recherchez n'existe pas ou n'est plus disponible.</p>
+                <p>Le produit que vous recherchez n&apos;existe pas ou n&apos;est plus disponible.</p>
                 <button onClick={() => router.push('/products')} className={styles.backButton}>
                     Retour aux produits
                 </button>
@@ -159,13 +151,12 @@ export default function ProductDetail() {
                                     id: product.id.toString(),
                                     name: product.name,
                                     price: product.price,
-                                    quantity: quantity,
+                                    quantity: 1,
                                     selectedColor: selectedColor,
                                     selectedOptions: { color: selectedColor }
-                                }),
-                                router.push('/cart')
-                            }
-                        }
+                                });
+                                router.push('/cart');
+                            }}
                             className={styles.addToCartButton}
                         >
                             Ajouter au panier
