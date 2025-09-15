@@ -27,19 +27,13 @@ jobs:
           cache-dependency-path: 'package-lock.json'
 
       - name: 📦 Install dependencies
-        run: |
-          cd web-app
-          npm ci
+        run: npm ci
 
       - name: 🛠️ Build Next.js app
-        run: |
-          cd web-app
-          npm run build
+        run: npm run build
 
       - name: 🗜️ Create deployment archive
-        run: |
-          cd web-app
-          tar -czf webapp-deploy.tar.gz .next/ package*.json public/ src/ next.config.ts tsconfig.json
+        run: tar -czf webapp-deploy.tar.gz .next/ package*.json public/ src/ next.config.ts tsconfig.json
 
       - name: 📤 Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
@@ -48,7 +42,7 @@ jobs:
           username: ${{ env.VPS_USER }}
           key: ${{ env.VPS_SSH_KEY }}
           port: ${{ env.VPS_PORT }}
-          source: "web-app/webapp-deploy.tar.gz"
+          source: "webapp-deploy.tar.gz"
           target: "/tmp/"
 
       - name: 🚀 Deploy to VPS
@@ -75,7 +69,6 @@ jobs:
             cat > .env.local << 'EOF'
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
             EOF
             
             # Installer les dépendances de production
